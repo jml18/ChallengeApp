@@ -5,13 +5,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.text.Editable;
 
 import org.w3c.dom.Text;
+
+import tcss450.uw.edu.challengeapp.model.Credentials;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,13 +23,14 @@ import org.w3c.dom.Text;
  * {@link Login.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class Login extends Fragment{
+public class Login extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
     public Login() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,23 +46,23 @@ public class Login extends Fragment{
     }
 
     private void register(View view) {
-
         if (mListener != null) {
             mListener.registerOpen();
         }
     }
 
-    private void login(View view){
+    private void login(View view) {
         TextView username = (TextView) getActivity().findViewById(R.id.logUserTxt);
         TextView password = (TextView) getActivity().findViewById(R.id.logPwdTxt);
 
-        if(username.getText().toString().isEmpty() || password.getText().toString().isEmpty()){
-            if(username.getText().toString().isEmpty())
+        if (username.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
+            if (username.getText().toString().isEmpty())
                 username.setError("Please enter username");
-            if(password.getText().toString().isEmpty())
+            if (password.getText().toString().isEmpty())
                 password.setError("Please enter password");
-        }else if (mListener != null) {
-            mListener.loggingSuccess(username.getText().toString(),password.getText().toString());
+        } else if (mListener != null) {
+            //fix this to use credential class
+            mListener.onLoginAttempt(new Credentials.Builder(username.getText().toString(), (Editable) password.getText()).build());
         }
     }
 
@@ -78,6 +83,20 @@ public class Login extends Fragment{
         mListener = null;
     }
 
+
+
+    /**
+     * Allows an external source to set an error message on this fragment. This may
+     * be needed if an Activity includes processing that could cause login to fail.
+     *
+     * @param err the error message to display.
+     */
+    public void setError(String err) {
+        //Log in unsuccessful for reason: err. Try again.
+        //you may want to add error stuffs for the user here.
+        ((TextView) getActivity().findViewById(R.id.logUserTxt)).setError(err);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -90,6 +109,7 @@ public class Login extends Fragment{
      */
     public interface OnFragmentInteractionListener {
         void registerOpen();
-        void loggingSuccess(String username,String password);
+
+        void onLoginAttempt(Credentials info);
     }
 }

@@ -1,6 +1,7 @@
 package tcss450.uw.edu.challengeapp;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,8 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link Display.OnSuccessFragmentInteractionListener} interface
+ * to handle interaction events.
+ */
 public class Display extends Fragment {
+
+    private OnSuccessFragmentInteractionListener mListener;
 
     public Display() {
         // Required empty public constructor
@@ -25,25 +33,42 @@ public class Display extends Fragment {
 
         return v;
     }
-
     @Override
     public void onStart() {
         super.onStart();
 
-        if (getArguments() != null) {
 
-            String username = getArguments().getString(getString(R.string.username));
-            String password = getArguments().getString(getString(R.string.password));
-            updateDisp(username,password);
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(
+                        getString(R.string.keys_shared_prefs),
+                        Context.MODE_PRIVATE);
 
+        if (prefs.getBoolean(getString(R.string.keys_prefs_stay_logged_in), false)) {
+            getView().findViewById(R.id.successLogoutButton)
+                    .setOnClickListener(v -> mListener.onLogout());
+        } else {
+            getView().findViewById(R.id.successLogoutButton).setVisibility(View.GONE);
+        }
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnSuccessFragmentInteractionListener) {
+            mListener = (OnSuccessFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnRegisterFragmentInteractionListener");
         }
     }
 
-    private void updateDisp(String username , String password){
-        TextView tv = getActivity().findViewById(R.id.dispUserTxt);
-        tv.setText(username);
-        tv = getActivity().findViewById(R.id.dispPwdTxt);
-        tv.setText(password);
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnSuccessFragmentInteractionListener {
+        void onLogout();
     }
 
 

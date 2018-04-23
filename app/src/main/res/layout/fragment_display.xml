@@ -18,6 +18,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/success"
         android:textAlignment="center"
+        android:textColor="?attr/colorAccent"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,29 +27,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/success" />
 
-    <TextView
-        android:id="@+id/dispUserTxt"
+    <Button
+        android:id="@+id/successLogoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:text="@string/username"
+        android:text="@string/logout"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/username" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/dispPwdTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dispUserTxt"
-        tools:text="@string/password" />
 </android.support.constraint.ConstraintLayout>
