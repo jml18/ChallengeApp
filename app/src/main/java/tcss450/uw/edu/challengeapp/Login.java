@@ -17,6 +17,9 @@ import org.w3c.dom.Text;
 
 import tcss450.uw.edu.challengeapp.model.Credentials;
 
+
+
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -54,7 +57,6 @@ public class Login extends Fragment {
     private void login(View view) {
         TextView username = (TextView) getActivity().findViewById(R.id.logUserTxt);
         TextView password = (TextView) getActivity().findViewById(R.id.logPwdTxt);
-
         if (username.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
             if (username.getText().toString().isEmpty())
                 username.setError("Please enter username");
@@ -109,7 +111,6 @@ public class Login extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void registerOpen();
-
         void onLoginAttempt(Credentials info);
     }
 }

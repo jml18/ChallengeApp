@@ -5,10 +5,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import tcss450.uw.edu.challengeapp.model.Credentials;
@@ -38,44 +40,47 @@ public class Registration extends Fragment {
         return v;
     }
 
-    private void register(View view) {
-        boolean noError = true;
-        String username = ((TextView) getActivity().findViewById(R.id.regUserTxt)).getText().toString();
-        String password1 = ((TextView) getActivity().findViewById(R.id.regPwdTxt1)).getText().toString();
-        String password2 = ((TextView) getActivity().findViewById(R.id.regPwdTxt2)).getText().toString();
-        String email = ((TextView) getActivity().findViewById(R.id.regEmailText)).getText().toString();
-        String firstName = ((TextView) getActivity().findViewById(R.id.regFirstNameText)).getText().toString();
-        String lastName = ((TextView) getActivity().findViewById(R.id.regLastNameText)).getText().toString();
-        if (username.isEmpty()) {
-            ((TextView) getActivity().findViewById(R.id.regUserTxt)).setError("Please enter username");
-            noError = false;
-        }
-        if (password1.isEmpty()) {
-            ((TextView) getActivity().findViewById(R.id.regPwdTxt1)).setError("Please enter password");
-            noError = false;
-        }
-        if (password2.isEmpty()) {
-            ((TextView) getActivity().findViewById(R.id.regPwdTxt2)).setError("Please enter password");
-            noError = false;
-        }
-        if (password1.length() < 6 && password2.length() < 6 && noError) {
-            ((TextView) getActivity().findViewById(R.id.regPwdTxt1)).setError("Please enter password with 6 characters or more");
-            ((TextView) getActivity().findViewById(R.id.regPwdTxt2)).setError("Please enter password with 6 characters or more");
-            noError = false;
-        }
-        if (!password1.equals(password2) && noError) {
-            ((TextView) getActivity().findViewById(R.id.regPwdTxt1)).setError("Please enter matching password");
-            ((TextView) getActivity().findViewById(R.id.regPwdTxt2)).setError("Please enter matching password");
-            noError = false;
+    private void register(View v) {
+        if (mListener != null) {
+            EditText email = v.findViewById(R.id.regEmailText);
+            EditText firstName = v.findViewById(R.id.regFirstNameText);
+            EditText lastName = v.findViewById(R.id.regLastNameText);
 
-        }
-        if (noError) {
-            Editable pwd = (Editable) ((TextView) getActivity().findViewById(R.id.regPwdTxt1)).getText();
-            mListener.register(new Credentials.Builder(username, pwd)
-                    .addEmail(email)
-                    .addFirstName(firstName)
-                    .addLastName(lastName)
-                    .build());
+            EditText username = v.findViewById(R.id.regUserTxt);
+            EditText password = v.findViewById(R.id.regPwdTxt1);
+            EditText passwordConfirm = v.findViewById(R.id.regPwdTxt2);
+
+            String emailText = email.getText().toString().trim();
+            String firstNameText = firstName.getText().toString().trim();
+            String lastNameText = lastName.getText().toString().trim();
+
+            String usernameText = username.getText().toString().trim();
+            String passwordText = password.getText().toString().trim();
+            String passwordConfirmText = passwordConfirm.getText().toString().trim();
+
+            int indexOfAt = emailText.indexOf('@');
+            if (indexOfAt < 0 && indexOfAt > emailText.length() - 1) {
+                email.setError("Invalid Email!!");
+            } else if (emailText.equals("")) {
+                email.setError("Email cannot be empty!");
+            } else if (firstNameText.equals("")) {
+                firstName.setError("First name cannot be empty!");
+            } else if (lastNameText.equals("")) {
+                lastName.setError("Last name cannot be empty!");
+            } else if (usernameText.equals("")) {
+                username.setError("Username cannot be empty");
+            } else if (passwordText.equals("")) {
+                password.setError("Password cannot be empty");
+            } else if (passwordConfirmText.equals("")) {
+                passwordConfirm.setError("Confirm Password cannot be empty");
+            } else if (password.length() < 6){
+                password.setError("Password must have at least 6 characters");
+            } else if (!(passwordText.equals(passwordConfirmText))){
+                password.setError("Password do not match!");
+            } else {
+                Credentials.Builder builder = new Credentials.Builder(usernameText, new SpannableStringBuilder(passwordText));
+                mListener.register(builder.build());
+            }
         }
 
     }

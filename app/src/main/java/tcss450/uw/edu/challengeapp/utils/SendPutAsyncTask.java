@@ -31,7 +31,7 @@ import java.util.function.Consumer;
  * @author Charles Bryan
  * @version 4/15/2018
  */
-public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
+public class SendPutAsyncTask extends AsyncTask<Void, String, String> {
 
     private final String mUrl;
     private final JSONObject mJsonMsg;
@@ -123,8 +123,8 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
          *
          * @return a SendPostAsyncTask with the current attributes
          */
-        public SendPostAsyncTask build() {
-            return new SendPostAsyncTask(this);
+        public SendPutAsyncTask build() {
+            return new SendPutAsyncTask(this);
         }
 
     }
@@ -134,7 +134,7 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
      *
      * @param builder the builder used to construct this object
      */
-    private SendPostAsyncTask(final Builder builder) {
+    private SendPutAsyncTask(final Builder builder) {
         mUrl = builder.mUrl;
         mJsonMsg = builder.mJsonMsg;
 
@@ -159,7 +159,7 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
         try {
             URL urlObject = new URL(mUrl);
             urlConnection = (HttpURLConnection) urlObject.openConnection();
-            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestMethod("PUT");
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
