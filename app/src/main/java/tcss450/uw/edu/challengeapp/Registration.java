@@ -42,13 +42,13 @@ public class Registration extends Fragment {
 
     private void register(View v) {
         if (mListener != null) {
-            EditText email = v.findViewById(R.id.regEmailText);
-            EditText firstName = v.findViewById(R.id.regFirstNameText);
-            EditText lastName = v.findViewById(R.id.regLastNameText);
+            EditText email = getActivity().findViewById(R.id.regEmailText);
+            EditText firstName = getActivity().findViewById(R.id.regFirstNameText);
+            EditText lastName = getActivity().findViewById(R.id.regLastNameText);
 
-            EditText username = v.findViewById(R.id.regUserTxt);
-            EditText password = v.findViewById(R.id.regPwdTxt1);
-            EditText passwordConfirm = v.findViewById(R.id.regPwdTxt2);
+            EditText username = getActivity().findViewById(R.id.regUserTxt);
+            EditText password = getActivity().findViewById(R.id.regPwdTxt1);
+            EditText passwordConfirm = getActivity().findViewById(R.id.regPwdTxt2);
 
             String emailText = email.getText().toString().trim();
             String firstNameText = firstName.getText().toString().trim();
