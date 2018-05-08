@@ -3,4 +3,8 @@
     <string name="ep_base_url">jml0608-lab4-backend.herokuapp.com</string>
     <string name="ep_login">login</string>
     <string name="ep_register">register</string>
+    <string name="ep_send_message">sendMessages</string>
+    <string name="ep_get_message">getMessages</string>
+    <string name="ep_lab_url">jml0608-lab4-backend.herokuapp.com</string>
+
 </resources>

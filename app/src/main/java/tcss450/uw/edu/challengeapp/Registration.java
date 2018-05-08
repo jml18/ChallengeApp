@@ -79,6 +79,9 @@ public class Registration extends Fragment {
                 password.setError("Password do not match!");
             } else {
                 Credentials.Builder builder = new Credentials.Builder(usernameText, new SpannableStringBuilder(passwordText));
+                builder.addEmail(emailText);
+                builder.addFirstName(firstNameText);
+                builder.addLastName(lastNameText);
                 mListener.register(builder.build());
             }
         }

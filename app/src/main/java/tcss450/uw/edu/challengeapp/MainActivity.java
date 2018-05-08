@@ -1,9 +1,11 @@
 package tcss450.uw.edu.challengeapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.net.nsd.NsdManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tcss450.uw.edu.challengeapp.ChatActivities.ChatActivity;
 import tcss450.uw.edu.challengeapp.model.Credentials;
 import tcss450.uw.edu.challengeapp.utils.SendPostAsyncTask;
 
@@ -35,7 +38,11 @@ public class MainActivity extends AppCompatActivity implements Login.OnFragmentI
 
                 if (prefs.getBoolean(getString(R.string.keys_prefs_stay_logged_in),
                         false)) {
-                    loadSuccessFragment();
+                    //loadSuccessFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.fragmentContainer, new Login(),
+                                    getString(R.string.keys_fragment_login))
+                            .commit();
                 } else {
                     getSupportFragmentManager().beginTransaction()
                             .add(R.id.fragmentContainer, new Login(),
@@ -91,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements Login.OnFragmentI
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_login))
+                .appendPath(getString(R.string.ep_register))
                 .build();
 
         //build the JSONObject
@@ -110,16 +117,16 @@ public class MainActivity extends AppCompatActivity implements Login.OnFragmentI
     }
 
     private void checkStayLoggedIn() {
+        SharedPreferences prefs =
+            getSharedPreferences(
+                    getString(R.string.keys_shared_prefs),
+                    Context.MODE_PRIVATE);
+        //save the username for later usage
+        prefs.edit().putString(
+                getString(R.string.keys_prefs_username),
+                mCredentials.getUsername())
+                .apply();
         if (((CheckBox) findViewById(R.id.logCheckBox)).isChecked()) {
-            SharedPreferences prefs =
-                    getSharedPreferences(
-                            getString(R.string.keys_shared_prefs),
-                            Context.MODE_PRIVATE);
-            //save the username for later usage
-            prefs.edit().putString(
-                    getString(R.string.keys_prefs_username),
-                    mCredentials.getUsername())
-                    .apply();
             //save the users “want” to stay logged in
             prefs.edit().putBoolean(
                     getString(R.string.keys_prefs_stay_logged_in),
@@ -146,14 +153,20 @@ public class MainActivity extends AppCompatActivity implements Login.OnFragmentI
     }
 
     private void loadSuccessFragment() {
-        Display successFragment = new Display();
+        //loading frag
+//        Display successFragment = new Display();
+//        getSupportFragmentManager().popBackStack();
+//        FragmentTransaction transaction = getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.fragmentContainer, successFragment);
+//
+//        // Commit the transaction
+//        transaction.commit();
 
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, successFragment);
-
-        // Commit the transaction
-        transaction.commit();
+        //ChatActivity
+        Intent intent = new Intent(this, ChatActivity.class);
+        ActivityCompat.finishAffinity(this);
+        startActivity(intent);
     }
 
     //Async methods
@@ -209,15 +222,20 @@ public class MainActivity extends AppCompatActivity implements Login.OnFragmentI
             boolean success = resultsJSON.getBoolean("success");
 
             if (success) {
-                //Login was successful. Switch to the loadSuccessFragment.
-                loadSuccessFragment();
+                getSupportFragmentManager().popBackStack();
+                FragmentTransaction transaction = getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, new Login(),getString(R.string.keys_fragment_login));
+
+                // Commit the transaction
+                transaction.commit();
             } else {
                 //Login was unsuccessful. Don’t switch fragments and inform the user
                 Registration frag =
                         (Registration) getSupportFragmentManager()
                                 .findFragmentByTag(
                                         getString(R.string.keys_fragment_register));
-                frag.setError("Registration in unsuccessful");
+                frag.setError("Registration is unsuccessful");
             }
 
         } catch (JSONException e) {
