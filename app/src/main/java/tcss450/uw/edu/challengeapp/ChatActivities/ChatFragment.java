@@ -42,7 +42,7 @@ public class ChatFragment extends Fragment {
 
         v.findViewById(R.id.chatSendButton).setOnClickListener(this::sendMessage);
         mOutputTextView = v.findViewById(R.id.chatOutputTextView);
-        Log.d("asswww","yolo");
+        Log.d("asswww", "yolo");
         return v;
 
     }
@@ -50,6 +50,8 @@ public class ChatFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+
         SharedPreferences prefs =
                 getActivity().getSharedPreferences(
                         getString(R.string.keys_shared_prefs),
@@ -72,6 +74,20 @@ public class ChatFragment extends Fragment {
                 .appendPath(getString(R.string.ep_get_message))
                 .appendQueryParameter("chatId", "1")
                 .build();
+        JSONObject messageJson = new JSONObject();
+
+        try {
+            messageJson.put(getString(R.string.keys_json_chat_id), 1);
+            messageJson.put("after", "2010-05-15 21:43:05.407269+00");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new SendPostAsyncTask.Builder(retrieve.toString(), messageJson)
+                .onPostExecute(this::publishProgress)
+                .onCancelled(this::handleError)
+                .build().execute();
+
 
         if (prefs.contains(getString(R.string.keys_prefs_time_stamp))) {
             //ignore all of the seen messages. You may want to store these messages locally
@@ -89,6 +105,18 @@ public class ChatFragment extends Fragment {
                     .setDelay(1000)
                     .build();
         }
+
+    }
+
+    private void publishProgress(String result) {
+        JSONObject messages;
+        try {
+            messages = new JSONObject(result);
+            publishProgress(messages);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -116,7 +144,7 @@ public class ChatFragment extends Fragment {
 
 
     private void sendMessage(final View theButton) {
-        Log.d("asswww","sending");
+        Log.d("asswww", "sending");
         JSONObject messageJson = new JSONObject();
         String msg = ((EditText) getView().findViewById(R.id.chatInputEditText))
                 .getText().toString();
@@ -143,7 +171,7 @@ public class ChatFragment extends Fragment {
         try {
             JSONObject res = new JSONObject(result);
 
-            if(res.get(getString(R.string.keys_json_success)).toString()
+            if (res.get(getString(R.string.keys_json_success)).toString()
                     .equals(getString(R.string.keys_json_success_value_true))) {
 
                 ((EditText) getView().findViewById(R.id.chatInputEditText))
@@ -153,13 +181,14 @@ public class ChatFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
     private void handleError(final Exception e) {
         Log.e("LISTEN ERROR!!!", e.getMessage());
     }
 
     private void publishProgress(JSONObject messages) {
         final String[] msgs;
-        if(messages.has(getString(R.string.keys_json_messages))) {
+        if (messages.has(getString(R.string.keys_json_messages))) {
             try {
 
                 JSONArray jMessages = messages.getJSONArray(getString(R.string.keys_json_messages));
